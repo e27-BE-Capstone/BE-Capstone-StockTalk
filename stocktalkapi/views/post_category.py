@@ -59,8 +59,22 @@ class PostCategoryView(ViewSet):
         except PostCategory.DoesNotExist:
             return Response({"message": "PostCategory not found"}, status=status.HTTP_404_NOT_FOUND)
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'name', 'description')
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('id', 'user', 'title', 'content', 'media', 'created_at', 'updated_at')
+        
 class PostCategorySerializer(serializers.ModelSerializer):
+    
+    post = PostSerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
     class Meta:
         model = PostCategory
         fields = ('id', 'post', 'category')
+
 
